@@ -8,16 +8,6 @@ const pool=new Pool({
     port:5432
 });
 
-const getData=(req,res)=>{
-    pool.query('SELECT * from transactions limit 20',(error,result)=>{
-        if(error){
-            throw Error
-        }
-        res.status(200).json(result.rows)
-    })
-}
-
-
 const  averageAmount= async (req,res)=>{
     await pool.query('SELECT AVG("amount") from transactions',(error,result)=>{
         if(error){
@@ -40,6 +30,8 @@ const getDatabyDate=async(req,res)=>{
 
 const topNuserInAMonth=async(req,res)=>{
     //pass the month in number and N is the number of user
+    const noOfUsers=req.body.N;
+    const month=req.body.month;
     console.log(noOfUsers,month);
     await pool.query(`SELECT count(transactionid) as number_of_txn, userid, 
         EXTRACT(MONTH FROM timestamp) AS month
